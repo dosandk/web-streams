@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>XMLHttpRequest vs fetch</title>
+</head>
+<body>
+<script type="module">
+  import xhrRequest from './xhr.js';
+  import fetchRequest from './fetch.js';
+
+  const url = 'https://jsonplaceholder.typicode.com/posts/2/comments';
+
+  xhrRequest(url);
+  fetchRequest(url);
+</script>
+</body>
+</html>
