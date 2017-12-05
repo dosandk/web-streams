@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cancel "fetch" request example</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <script src="cancel-fetch.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h1>Cancel "fetch" request example</h1>
+  <form action="javascript:void(0)" onsubmit="fetchWrapper.makeRequest(this.url.value)">
+    <input class="input-text" name="url" value="https://jsonplaceholder.typicode.com/photos" type="text"/>
+    <input class="input-submit" value="Send Request" type="submit"/>
+  </form>
+
+  <button class="abort-btn" onclick="fetchWrapper.cancelRequest()">Cancel fetch request</button>
+</div>
+
+
+</body>
+</html>
