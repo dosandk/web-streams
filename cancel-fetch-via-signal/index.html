@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cancel fetch via signal</title>
+</head>
+<body>
+  <h1>Cancel fetch via signal</h1>
+  <h2>
+    The original <a href="https://github.com/whatwg/fetch/issues/27">GitHub issue for "Aborting a fetch"</a> was opened in 2015
+  </h2>
+
+  <script>
+    const controller = new AbortController();
+    const {signal} = controller;
+    const request = new Request('http://example.com/posts', {signal});
+
+    /*
+    * When you abort a fetch, it aborts both the request and response,
+    * so any reading of the response body (such as response.text()) is also aborted.
+    * */
+    setTimeout(() => controller.abort(), 5000);
+
+    fetch(request)
+      .then(response => response.text())
+      .then(text => console.log(text))
+      .catch(err => {
+        if (err.name === 'AbortError') {
+          console.log(`Fetch aborted ${err}`);
+        } else {
+          console.error(`Error: ${err}`);
+        }
+    });
+  </script>
+</body>
+</html>

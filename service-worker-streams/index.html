@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Streams inside Service Workers</title>
+</head>
+<body>
+  <h1>Streams inside Service Workers</h1>
+
+  <script>
+    // TODO: move this to Service worker
+    /*self.addEventListener('fetch', event => {
+      var stream = new ReadableStream({
+        start(controller) {
+          if (/!* there's more data *!/) {
+            controller.enqueue(/!* your data here *!/);
+          } else {
+            controller.close();
+          }
+        });
+    });
+
+    var response = new Response(stream, {
+      headers: {'content-type': /!* your content-type here *!/}
+    });
+
+    event.respondWith(response);
+    });*/
+  </script>
+
+</body>
+</html>

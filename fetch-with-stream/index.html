@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fetch with stream</title>
+  <style>
+    .container {
+      outline: 1px solid red;
+      width: 100%;
+      min-height: 100px;
+      display: flex;
+      justify-content: center;
+    }
+    .element {
+      width: 50%;
+      outline: 1px solid red;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Fetch with stream</h1>
+<div class="container">
+  <div class="element" id="chunks"></div>
+  <div class="element" id="content"></div>
+</div>
+
+<script>
+  const decoder = new TextDecoder();
+  const $chunks = document.getElementById('chunks');
+  const $content = document.getElementById('content');
+
+  const fetchWithStream = async () => {
+    const response = await fetch('./data.json');
+    const reader = response.body.getReader();
+    const contentLengthHeader = response.headers.get('Content-Length');
+    const resourceSize = parseInt(contentLengthHeader, 10);
+
+    async function read(reader, totalChunkSize = 0, chunkCount = 0) {
+      const {value = {}, done} = await reader.read();
+      const {length} = value;
+
+      console.error('value', value);
+
+      if (done) return chunkCount;
+
+      $content.innerHTML += decoder.decode(value, {stream: true});
+
+      const runningTotal = totalChunkSize + length;
+      const percentComplete = Math.round((runningTotal / resourceSize) * 100);
+
+      const progress = `${percentComplete}% (chunk ${chunkCount})`;
+
+      $chunks.innerHTML += progress + '<br />';
+
+      return read(reader, runningTotal, chunkCount + 1);
+    }
+
+    const chunkCount = await read(reader);
+
+    console.log(`Finished! Received ${chunkCount} chunks`);
+    console.log(JSON.parse($content.innerText));
+  };
+
+  fetchWithStream();
+</script>
+</body>
+</html>

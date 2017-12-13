@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Streams piping</title>
+</head>
+<body>
+  <h1>
+    Streams piping
+  </h1>
+<script>
+  async function init() {
+    const readableStream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(1);
+        controller.enqueue(2);
+        controller.enqueue(3);
+        controller.close();
+      }
+    });
+
+    const writableStream = new WritableStream({});
+
+    const result = await readableStream.pipeTo(writableStream);
+
+    console.log('Piping has finished', result);
+  }
+
+  init();
+</script>
+</body>
+</html>
