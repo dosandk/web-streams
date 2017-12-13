@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Synchronous Streams with Generators</title>
+</head>
+<body>
+  <h1>Synchronous  Streams with Generators</h1>
+
+  <button onclick="count()">Get counter value</button>
+  <button onclick="getSequence()">Get sequence of values</button>
+
+  <script>
+    function* generator() {
+      let n = 1;
+
+      while (true) yield n++;
+    }
+
+    const count = makeCounter(generator);
+    const getSequence = createSequence(10, generator);
+
+    function createSequence (n, generator) {
+      return () => {
+        const iterator = generator();
+
+        for (let item of iterator) {
+          if (item > n) break;
+          console.error('item', item);
+        }
+      }
+    }
+
+    function makeCounter (generator) {
+      const iterator = generator();
+
+      return () => {
+        const {value} = iterator.next();
+
+        console.error('value', value);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>ReadableStream example</title>
+</head>
+<body>
+  <h1>ReadableStream example</h1>
+
+  <script>
+    let interval;
+
+    const stream = new ReadableStream({
+      start(controller) {
+        interval = setInterval(() => {
+          const num = Math.random();
+
+          controller.enqueue(num); // Add the number to the stream
+
+          if (num > 0.9) {
+            controller.close(); // Signal the end of the stream
+            clearInterval(interval);
+          }
+        }, 1000);
+      },
+      cancel() {
+        clearInterval(interval); // This is called if the reader cancels, so we should stop generating numbers
+      }
+    });
+
+
+    const reader = new Response(stream).body.getReader();
+
+    console.error('stream', stream);
+    console.error('response', new Response(stream));
+
+    async function read (reader) {
+      console.error('reader', reader);
+      console.error('reader.read', await reader.read());
+      console.error('reader.read', await reader.read());
+      console.error('reader.read', await reader.read());
+      console.error('reader.read', await reader.read());
+    }
+
+    read(reader);
+
+    // for (let item of reader.read()) {
+    //   console.error('item', item);
+    //   debugger;
+    // }
+  </script>
+</body>
+</html>

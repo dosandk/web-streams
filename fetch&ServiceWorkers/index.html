@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>fetch & ServiceWorkers</title>
+  <script src="../utils/fetch.js"></script>
+  <script src="../utils/xhr.js"></script>
+</head>
+<body>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => registration.active)
+      .catch(error => console.log(error));
+  }
+
+  fetchWithProgress();
+  fetchES7();
+</script>
+
+<button onclick="fetchRequest('https://jsonplaceholder.typicode.com/posts/2/comments')">make "fetch" request</button>
+<button onclick="xhrRequest('https://jsonplaceholder.typicode.com/posts/2/comments')">make "xhr" request</button>
+
+</body>
+</html>

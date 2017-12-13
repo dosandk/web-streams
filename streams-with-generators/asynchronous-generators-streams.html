@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Asynchronous Streams with Generators</title>
+</head>
+<body>
+  <h1>Asynchronous Streams with Generators</h1>
+
+  <button onclick="count()">Get value from server</button>
+  <button onclick="getSequence()">Get values from server</button>
+
+  <script>
+    // function* generator () {
+    //   const start = Date.now();
+    //
+    //   for (let i = 1; i < 10; i++) {
+    //     try {
+    //       yield fetch(i);
+    //     } catch (err) {
+    //       console.error(`Error: ${err}`)
+    //     }
+    //   }
+    //
+    //   console.log('::ALL DRIVERS SUCCESSFULLY LOGGED IN::', Date.now() - start, 'ms');
+    //
+    //   const timer = setTimeout(() => runSockets(), 5000);
+    //
+    //   rl.question('Do you want start web sockets testing? (Yes/no)', answer => {
+    //     clearTimeout(timer);
+    //     if (answer.toLowerCase() === 'yes' || !answer) {
+    //       runSockets();
+    //     } else {
+    //       rl.close();
+    //     }
+    //   });
+    // }
+
+    const fetchPosts = () => fetch('https://jsonplaceholder.typicode.com/posts').then(response => response.json());
+    const fetchComments = id => fetch(`https://jsonplaceholder.typicode.com/posts/${id}/comments`).then(response => response.json());
+
+    coroutine(function* () {
+      try {
+        const posts = yield fetchPosts();
+        console.error('posts', posts);
+        const promises = posts.map(({id}) => fetchComments(id));
+        const comments = yield Promise.all(promises);
+        showComments(comments);
+      } catch (err) {
+        console.error(`Error: ${err}`)
+      }
+    });
+
+    function coroutine(fn) {
+      const iterator = fn();
+
+      const doNext = data => {
+        const {done, value} = iterator.next(data);
+
+        if (!done) {
+          return value.then(doNext);
+        }
+      };
+
+      doNext();
+    }
+
+    function showComments (comments) {
+      console.error('comments', comments);
+    }
+
+    // function co (iterator) {
+    //   const next = iteration => {
+    //     const {done, value} = iteration;
+    //
+    //     if (done) return;
+    //
+    //     value
+    //       .then(result => next(iterator.next(result)))
+    //       .catch(error => iterator.throw(error));
+    //   };
+    //
+    //   next(iterator.next());
+    // }
+  </script>
+</body>
+</html>
