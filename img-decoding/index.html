@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Image Decoding</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<main class="main">
+  <div class="box">
+    <h2>Image Decoding</h2>
+  </div>
+  <img src="minion.gif" alt="minion">
+</main>
+<script>
+  // Without the decode() method, the process of loading an img element and then displaying it might look like the following:
+
+  const img = new Image();
+  const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
+
+  img.src = url;
+  img.onload = () => {
+    document.body.appendChild(img);
+  };
+  img.onerror = () => {
+    document.body.appendChild(new Text('Could not load the nebula :('));
+  };
+  // However, this can cause notable dropped frames, as the paint that occurs after inserting the image into the DOM causes a synchronous decode on the main thread.
+  // This can instead be rewritten using the decode() method:
+
+
+  // This latter form avoids the dropped frames of the original, by allowing the user agent to decode the image in parallel, and only inserting it into the DOM (and thus causing it to be painted) once the decoding process is complete.
+</script>
+
+<script>
+  // const img = new Image();
+  // const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
+  //
+  // img.src = url;
+  // img.decode().then((a) => {
+  //   console.error(a);
+  //   document.body.appendChild(img);
+  // }).catch(() => {
+  //   document.body.appendChild(new Text('Could not load the nebula :('));
+  // });
+</script>
+</body>
+</html>

@@ -6,7 +6,6 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Asynchronous Streams with Generators</title>
-  <script src="../../../AppData/Local/Temp/index.js"></script>
 </head>
 <body>
   <h1>Asynchronous Streams with Generators</h1>
@@ -17,7 +16,7 @@
   <br>
   <br>
 
-  <button onclick="coroutine(generator())">Click me</button>
+  <button onclick="pause()">Pause</button>
 
 
   <script>
@@ -53,43 +52,83 @@
     //   }
     // });
 
-    const fetchPost = index => fetch(`https://jsonplaceholder.typicode.com/post/${index}`).then(response => response.json());
+    const fetchPost = index => fetch(`https://jsonplaceholder.typicode.com/posts/${index}`).then(response => response.json());
     // const fetchComments = id => fetch(`https://jsonplaceholder.typicode.com/posts/${id}/comments`).then(response => response.json());
 
-    function* generator () {
-      try {
-        // const promises = posts.map(({id}) => fetchComments(id));
-        // const comments = yield Promise.all(promises);
-        // showComments(comments);
+    const stream = new ReadableStream({
+      start (controller) {
+        let counter = 0;
+        this.interval = setInterval(() => {
+          controller.enqueue(counter); // Add the number to the stream
+          counter++;
+        }, 1000);
 
-        for (let i = 1; i < 10; i++) {
-          const post = yield fetchPost();
-          console.error('post', post);
-        }
-      } catch (err) {
-        console.error(`Error: ${err}`)
+        setTimeout(() => {
+          controller.close(); // Signal the end of the stream
+          clearInterval(this.interval);
+        }, 15000)
+      },
+      cancel () {
+        clearInterval(this.interval); // This is called if the reader cancels, so we should stop generating numbers
+      }
+    });
+
+    const reader = new Response(stream).body.getReader();
+
+    async function read (reader) {
+      const {done, value} = await reader.read();
+
+      console.error('done', done);
+      console.error('value', value);
+
+      if (!done) {
+        setTimeout(() => {
+          read(reader);
+        }, 10000);
       }
     }
 
-    function coroutine(iterator) {
-      const doNext = step => {
-        const {done, value} = step.next();
+    read(reader);
 
-        console.error('done', done);
-        console.error('value', value);
-
-
-        if (!done) {
-          return value
-            .then(result => console.error('result', result))
-            .catch(error => iterator.throw(error));
-        }
-      };
-
-      doNext(iterator);
-    }
-
-    // coroutine(generator());
+    // function* generator () {
+    //   try {
+    //     // const promises = posts.map(({id}) => fetchComments(id));
+    //     // const comments = yield Promise.all(promises);
+    //     // showComments(comments);
+    //     let i = 1;
+    //     while (1) {
+    //       yield fetchPost(i);
+    //       i++;
+    //     }
+    //   } catch (err) {
+    //     console.error(`Error: ${err}`)
+    //   }
+    // }
+    //
+    // function co (iterator) {
+    //   const doNext = step => {
+    //     const {done, value} = step.next();
+    //
+    //     console.error('done', done);
+    //     console.error('value', value);
+    //
+    //     if (!done) {
+    //       debugger;
+    //       return value
+    //         .then(result => {
+    //           console.error('result', result);
+    //           doNext(iterator);
+    //         })
+    //         .catch(error => iterator.throw(error));
+    //     }
+    //   };
+    //
+    //   doNext(iterator);
+    // }
+    //
+    // const iterator = generator(); // {value: undefined, done: false}
+    //
+    // co(iterator);
 
     // function showComments (comments) {
     //   console.error('comments', comments);

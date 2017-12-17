@@ -16,25 +16,28 @@
     <h2>Fetch with progress</h2>
 
     <button onclick="fetchWithStream()">Fetch</button>
+    <button onclick="stopRead()">Cancel fetch</button>
+
     <div class="progress-bar">
       <div id="progress-fill" class="progress-fill">&nbsp;</div>
     </div>
   </div>
+  <br>
+  <img class="img" id="img" src="" alt="">
 </main>
 
 <script>
   const $fill = document.getElementById('progress-fill');
-
+  let reader;
   const fetchWithStream = async () => {
     const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
     const response = await fetch(url);
-    const reader = response.body.getReader();
+    reader = response.body.getReader();
     const contentLength = response.headers.get('Content-Length');
-    const resourceSize = parseInt(contentLength, 10);
 
     let received = 0;
 
-    async function read(reader) {
+    async function read (reader) {
       const {value = {}, done} = await reader.read();
       const {length} = value;
 
@@ -42,17 +45,28 @@
 
       if (done) {
         $fill.style.background = 'green';
+        // document.body.style.backgroundImage = `url(${url})`;
+        const blob = new Blob([value], {type: 'image/jpeg'});
+        console.error('blob', blob);
+        const imageUrl = window.URL.createObjectURL(blob);
+        console.error('imageUrl', imageUrl);
+        const img = document.getElementById('img');
+        img.src = imageUrl;
         return;
       }
 
       received += length;
-      $fill.style.width = `${received / resourceSize * 100}%`;
+      $fill.style.width = `${received / contentLength * 100}%`;
 
       read(reader);
     }
 
     read(reader);
   };
+
+  function stopRead () {
+    reader.cancel();
+  }
 </script>
 </body>
 </html>
