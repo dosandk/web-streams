@@ -6,67 +6,23 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Fetch with progress</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="main.css">
 </head>
 <body>
-
 <main class="main">
   <div class="box">
     <h2>Fetch with progress</h2>
 
-    <button onclick="fetchWithStream()">Fetch</button>
-    <button onclick="stopRead()">Cancel fetch</button>
+    <button id="request" onclick="request.makeRequest()">Fetch</button>
+    <button id="cancel" disabled class="disabled" onclick="request.abortRequest()">Cancel fetch</button>
+    <button onclick="location.reload()">Reset</button>
 
     <div class="progress-bar">
       <div id="progress-fill" class="progress-fill">&nbsp;</div>
     </div>
+    <div id="percent-value" class="percent">0%</div>
   </div>
-  <br>
-  <img class="img" id="img" src="" alt="">
 </main>
-
-<script>
-  const $fill = document.getElementById('progress-fill');
-  let reader;
-  const fetchWithStream = async () => {
-    const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
-    const response = await fetch(url);
-    reader = response.body.getReader();
-    const contentLength = response.headers.get('Content-Length');
-
-    let received = 0;
-
-    async function read (reader) {
-      const {value = {}, done} = await reader.read();
-      const {length} = value;
-
-      console.error('value', value);
-
-      if (done) {
-        $fill.style.background = 'green';
-        // document.body.style.backgroundImage = `url(${url})`;
-        const blob = new Blob([value], {type: 'image/jpeg'});
-        console.error('blob', blob);
-        const imageUrl = window.URL.createObjectURL(blob);
-        console.error('imageUrl', imageUrl);
-        const img = document.getElementById('img');
-        img.src = imageUrl;
-        return;
-      }
-
-      received += length;
-      $fill.style.width = `${received / contentLength * 100}%`;
-
-      read(reader);
-    }
-
-    read(reader);
-  };
-
-  function stopRead () {
-    reader.cancel();
-  }
-</script>
+<script src="./fetch-with-progress.js"></script>
 </body>
 </html>
