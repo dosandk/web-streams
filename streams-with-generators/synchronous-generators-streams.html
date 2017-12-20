@@ -14,35 +14,60 @@
   <button onclick="getSequence()">Get sequence of values</button>
 
   <script>
-    function* generator() {
-      let n = 1;
+    async function* asyncGenerator () {
+      const min = 1;
+      const max = 1000;
+      const url = `https://www.random.org/integers/?num=1&min=${min}&max=${max}&col=1&base=10&format=plain&rnd=new`;
 
-      while (true) yield n++;
+      while (true) yield await fetch(url).then(async response => await response.json());
     }
 
-    const count = makeCounter(generator);
-    const getSequence = createSequence(10, generator);
-
-    function createSequence (n, generator) {
-      return () => {
-        const iterator = generator();
-
-        for (let item of iterator) {
-          if (item > n) break;
-          console.error('item', item);
-        }
-      }
+    function* syncGenerator () {
+      const min = 1;
+      const max = 1000;
+      while (true) yield Math.random() * (max - min) + min;
     }
 
-    function makeCounter (generator) {
-      const iterator = generator();
+    const syncIterator = syncGenerator();
+    const asyncIterator = asyncGenerator();
 
-      return () => {
-        const {value} = iterator.next();
+    console.error('syncIterator', syncIterator.next());
+    console.error('syncIterator', syncIterator.next());
+    console.error('syncIterator', syncIterator.next());
 
-        console.error('value', value);
-      }
-    }
+    console.error('asyncIterator', asyncIterator.next());
+    console.error('asyncIterator', asyncIterator.next());
+    console.error('asyncIterator', asyncIterator.next());
+
+    // function* generator() {
+    //   let n = 1;
+    //
+    //   while (true) yield n++;
+    // }
+    //
+    // const count = makeCounter(generator);
+    // const getSequence = createSequence(10, generator);
+    //
+    // function createSequence (n, generator) {
+    //   return () => {
+    //     const iterator = generator();
+    //
+    //     for (let item of iterator) {
+    //       if (item > n) break;
+    //       console.error('item', item);
+    //     }
+    //   }
+    // }
+    //
+    // function makeCounter (generator) {
+    //   const iterator = generator();
+    //
+    //   return () => {
+    //     const {value} = iterator.next();
+    //
+    //     console.error('value', value);
+    //   }
+    // }
   </script>
 </body>
 </html>
