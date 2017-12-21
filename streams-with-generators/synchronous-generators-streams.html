@@ -19,7 +19,11 @@
       const max = 1000;
       const url = `https://www.random.org/integers/?num=1&min=${min}&max=${max}&col=1&base=10&format=plain&rnd=new`;
 
-      while (true) yield await fetch(url).then(async response => await response.json());
+      while (true) {
+        const response = await fetch(url);
+        const result = await response.json();
+        yield result;
+      }
     }
 
     function* syncGenerator () {
@@ -35,9 +39,11 @@
     console.error('syncIterator', syncIterator.next());
     console.error('syncIterator', syncIterator.next());
 
-    console.error('asyncIterator', asyncIterator.next());
-    console.error('asyncIterator', asyncIterator.next());
-    console.error('asyncIterator', asyncIterator.next());
+    (async function () {
+      console.error('asyncIterator', await asyncIterator.next());
+      console.error('asyncIterator', await asyncIterator.next());
+      console.error('asyncIterator', await asyncIterator.next());
+    }());
 
     // function* generator() {
     //   let n = 1;
