@@ -3,7 +3,10 @@ import decoder from './text-decoder.js';
 
 const makeRequest = async () => {
   const response = await fetch('https://jsonplaceholder.typicode.com/photos/');
-
+  // {
+  //   done: Boolean, // Is this the end of the source’s data?
+  //   value: Uint8Array // Could be anything, Uint8Array in our case
+  // }
   response.body
     .pipeThrough(decoder())
     .pipeTo(writer);

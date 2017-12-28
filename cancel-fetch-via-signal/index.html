@@ -21,17 +21,16 @@
   <script>
     const controller = new AbortController();
     const {signal} = controller;
-    const request = new Request('http://example.com/posts', {signal});
+    const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
+    const request = new Request(url, {signal});
 
     /*
     * When you abort a fetch, it aborts both the request and response,
     * so any reading of the response body (such as response.text()) is also aborted.
     * */
-    setTimeout(() => controller.abort(), 5000);
+    setTimeout(() => controller.abort(), 250);
 
     fetch(request)
-      .then(response => response.text())
-      .then(text => console.log(text))
       .catch(err => {
         if (err.name === 'AbortError') {
           console.log(`Fetch aborted ${err}`);

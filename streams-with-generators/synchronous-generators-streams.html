@@ -14,10 +14,9 @@
   <button onclick="getSequence()">Get sequence of values</button>
 
   <script>
-    async function* asyncGenerator () {
-      const min = 1;
-      const max = 1000;
-      const url = `https://www.random.org/integers/?num=1&min=${min}&max=${max}&col=1&base=10&format=plain&rnd=new`;
+    async function* asyncGenerator (min, max) {
+      const params = `?num=1&min=${min}&max=${max}&col=1&base=10&format=plain`;
+      const url = `https://www.random.org/integers/${params}`;
 
       while (true) {
         const response = await fetch(url);
@@ -26,24 +25,15 @@
       }
     }
 
-    function* syncGenerator () {
-      const min = 1;
-      const max = 1000;
-      while (true) yield Math.random() * (max - min) + min;
+    function* syncGenerator (min, max) {
+      while (true) yield Math.round(Math.random() * (max - min) + min);
     }
 
-    const syncIterator = syncGenerator();
-    const asyncIterator = asyncGenerator();
+    const syncIterator = syncGenerator(1, 1000);
+    const asyncIterator = asyncGenerator(1, 1000);
 
-    console.error('syncIterator', syncIterator.next());
-    console.error('syncIterator', syncIterator.next());
-    console.error('syncIterator', syncIterator.next());
-
-    (async function () {
-      console.error('asyncIterator', await asyncIterator.next());
-      console.error('asyncIterator', await asyncIterator.next());
-      console.error('asyncIterator', await asyncIterator.next());
-    }());
+    setInterval(() => console.log('value', syncIterator.next().value), 3000);
+    setInterval(async () => console.log('value', (await asyncIterator.next()).value), 3000);
 
     // function* generator() {
     //   let n = 1;

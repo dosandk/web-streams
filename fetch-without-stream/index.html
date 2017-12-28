@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fetch with progress</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<main class="main">
+  <div class="box">
+    <h2>Fetch with progress</h2>
+
+    <button id="request" onclick="request.makeRequest()">Fetch</button>
+    <button id="cancel" disabled class="disabled" onclick="request.abortRequest()">Cancel fetch</button>
+    <button onclick="location.reload()">Reset</button>
+
+    <div class="progress-bar">
+      <div id="progress-fill" class="progress-fill">&nbsp;</div>
+    </div>
+    <div id="percent-value" class="percent">0%</div>
+  </div>
+</main>
+<script src="./fetch-with-progress.js"></script>
+</body>
+</html>

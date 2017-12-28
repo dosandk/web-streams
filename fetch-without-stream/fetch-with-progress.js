@@ -6,8 +6,7 @@ const $cancelBtn = document.getElementById('cancel');
 const request = {
   async makeRequest () {
     const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
-    const response = await fetch(url)
-      .catch(err => console.error(`Error: ${err}`));
+    const response = await fetch(url).catch(err => console.error(`Error: ${err}`));
     this.reader = response.body.getReader();
     const contentLength = response.headers.get('Content-Length');
 
@@ -17,9 +16,12 @@ const request = {
     $cancelBtn.removeAttribute('disabled');
 
 
+    let riba = new Float64Array();
+
     async function read (reader, received = 0) {
       const {value = {}, done} = await reader.read();
       const {length} = value;
+
       received += length;
       const width = `${Math.round(received / contentLength * 100)}%`;
 
@@ -31,6 +33,10 @@ const request = {
           document.body.style.backgroundImage = `url(${url})`;
         });
       }
+
+      console.error(value);
+
+      // riba.set(value, offset=0);
 
       requestAnimationFrame(() => {
         if ($fill.style.width !== width) {
