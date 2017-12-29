@@ -20,15 +20,17 @@ window.onload = function () {
   this.makeRequest = makeRequest;
 };
 
+const $counter = document.getElementById('chunks-counter');
+
 const writer = new WritableStream({
+  counter: 0,
   write (chunk) {
-    // const decoder = new TextDecoder();
-    // document.body.innerHTML += decoder.decode(chunk, {stream: true})
-    console.log('write chunk');
+    this.counter++;
+    $counter.innerHTML = `Chunks: ${this.counter}`;
   },
   // When its finished,
   close () {
     // Make a note of how long it took from getting the stream, to rendering it.
-    console.log('Stream closed!')
+    console.log('Writable stream closed! 🔥');
   }
 });
