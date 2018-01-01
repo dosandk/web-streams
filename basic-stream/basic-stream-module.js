@@ -22,6 +22,8 @@ window.onload = function () {
 
 const $counter = document.getElementById('chunks-counter');
 
+const backpressure = new CountQueuingStrategy({ highWaterMark: 1 });
+
 const writer = new WritableStream({
   counter: 0,
   write (chunk) {

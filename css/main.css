@@ -1,5 +1,7 @@
 html, body {
     background: #f3f3f3;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 main {

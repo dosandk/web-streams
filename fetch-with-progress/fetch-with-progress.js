@@ -5,17 +5,13 @@ const $cancelBtn = document.getElementById('cancel');
 
 const request = {
   async makeRequest () {
-    const url = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Indian-lion-zoo-thrichur.jpg';
-    const response = await fetch(url)
-      .catch(err => console.error(`Error: ${err}`));
+    const url = 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Cosmic_%E2%80%98Winter%E2%80%99_Wonderland.jpg';
+    const response = await fetch(url);
     this.reader = response.body.getReader();
     const contentLength = response.headers.get('Content-Length');
 
-    $requestBtn.setAttribute('disabled', 'disabled');
-    $requestBtn.classList.add('disabled');
-    $cancelBtn.classList.remove('disabled');
-    $cancelBtn.removeAttribute('disabled');
-
+    this.disableRequestBtn();
+    this.enableCancelBtn();
 
     async function read (reader, received = 0) {
       const {value = {}, done} = await reader.read();
@@ -24,34 +20,47 @@ const request = {
       const width = `${Math.round(received / contentLength * 100)}%`;
 
       if (done) {
-        return requestAnimationFrame(() => {
+        request.progressAnimationId = requestAnimationFrame(() => {
           $fill.style.background = 'green';
-          $cancelBtn.setAttribute('disabled', 'disabled');
-          $cancelBtn.classList.add('disabled');
+          request.disableCancelBtn();
           document.body.style.backgroundImage = `url(${url})`;
         });
+        return;
       }
 
-      requestAnimationFrame(() => {
-        if ($fill.style.width !== width) {
-          console.error('width', width);
-
+      if ($fill.style.width !== width) {
+        requestAnimationFrame(() => {
           $percentValue.innerText = width;
           $fill.style.width =  width;
-        }
-      });
+        });
+      }
 
       read(reader, received);
     }
 
-    read(this.reader).then(() => {
-      console.error('riba', riba);
-    });
+    read(this.reader);
   },
 
-  abortRequest () {
+  enableCancelBtn() {
+    $cancelBtn.removeAttribute('disabled');
+    $cancelBtn.classList.remove('disabled');
+  },
+
+  disableCancelBtn() {
+    $cancelBtn.setAttribute('disabled', 'disabled');
+    $cancelBtn.classList.add('disabled');
+  },
+
+  disableRequestBtn () {
+    $requestBtn.setAttribute('disabled', 'disabled');
+    $requestBtn.classList.add('disabled');
+  },
+
+  async abortRequest () {
     if (this.reader) {
-      this.reader.cancel();
+      await this.reader.cancel();
+      cancelAnimationFrame(this.progressAnimationId);
+      this.disableCancelBtn();
     }
   }
 };
