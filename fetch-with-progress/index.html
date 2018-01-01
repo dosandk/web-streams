@@ -13,14 +13,26 @@
   <div class="box">
     <h2>Fetch with progress</h2>
 
-    <button id="request" onclick="request.makeRequest()">Fetch</button>
-    <button id="cancel" disabled class="disabled" onclick="request.abortRequest()">Cancel fetch</button>
-    <button onclick="location.reload()">Reset</button>
-
-    <div class="progress-bar">
-      <div id="progress-fill" class="progress-fill">&nbsp;</div>
+    <div>
+      <input id="url-input" class="url-input" type="text" placeholder="paste your image url" value="https://upload.wikimedia.org/wikipedia/commons/1/1f/Cosmic_%E2%80%98Winter%E2%80%99_Wonderland.jpg"/>
+      <button id="request" onclick="request.makeRequest()">Fetch</button>
+      <button onclick="location.reload()">Reset</button>
     </div>
-    <div id="percent-value" class="percent">0%</div>
+
+    <label class="progress-enabler">
+      Enable progress:
+      <input id="toggle-request-type-btn" type="checkbox" checked/>
+    </label>
+
+    <div id="progress-controls" class="progress-controls">
+      <div class="progress-bar">
+        <div id="progress-fill" class="progress-fill">&nbsp;</div>
+      </div>
+      <div id="percent-value" class="percent">0%</div>
+        <button id="cancel" disabled class="disabled" onclick="request.abortRequest()">Cancel fetch</button>
+      </div>
+    </div>
+
   </div>
 </main>
 <script src="./fetch-with-progress.js"></script>
